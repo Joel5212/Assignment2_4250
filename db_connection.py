@@ -15,8 +15,6 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import re;
 
-split_regex = r'\s+|[.,;!?"]+'
-
 def connectDataBase():
 
     DB_NAME = "Assignment2"
@@ -85,20 +83,16 @@ def createDocument(cur, doc_number, doc_text, doc_title, doc_date, name):
     currentTerms = []
     for rec in recset:
         currentTerms.append(rec['term'])
-    print("CURRENT TERMS" + str(currentTerms))
+   
     termsInDocument = []
-
-
     for term in doc_text.split(' '):
         cleanedTerm = re.sub(r'[^\w\s]', '', term.lower())
         termsInDocument.append(cleanedTerm)
         if cleanedTerm not in currentTerms:
             sql = "Insert into terms (term, num_chars) Values (%s, %s)"
             currentTerms.append(cleanedTerm)
-
             recset = [cleanedTerm, len(cleanedTerm)]
             cur.execute(sql, recset)
-    print("TERMS IN DOCUMENT" + str(termsInDocument))    
             
     # 4 Update the index
     # 4.1 Find all terms that belong to the document
@@ -112,7 +106,6 @@ def createDocument(cur, doc_number, doc_text, doc_title, doc_date, name):
             if termInDocument == term:
                 numOfTerms+=1
         termsAndCounts[termInDocument] = numOfTerms
-    print("TERMS AND COUNT" + str(termsAndCounts))    
 
     for key, value in termsAndCounts.items():
         sql = "Insert into document_terms (doc_number, term, term_count) Values (%s, %s, %s)"
