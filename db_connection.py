@@ -17,6 +17,9 @@ import re;
 
 def connectDataBase():
 
+    # Create a database connection object using psycopg2
+    # --> add your Python code here
+
     DB_NAME = "Assignment2"
     DB_USER = "postgres"
     DB_PASS = "1234567"
@@ -35,8 +38,25 @@ def connectDataBase():
     except:
         print("Database not connected successfully")
 
-    # Create a database connection object using psycopg2
-    # --> add your Python code here
+def createTables(cur, conn):
+    try: 
+        sql = "create table categories( id_cat integer not null, name text not null, constraint categories_pk primary key (id_cat));"
+        cur.execute(sql)
+
+        sql = "create table documents(doc_number integer not null, doc_text text not null, doc_title text not null, doc_date date not null, num_chars integer not null, id_cat integer not null, constraint documents_pkey primary key (doc_number), constraint fk_id_cat foreign key (id_cat) references categories(id_cat));"
+        cur.execute(sql)
+
+        sql = "create table terms(term text NOT NULL, num_chars integer NOT NULL, constraint term_pkey primary key (term));"
+        cur.execute(sql) 
+
+        sql = "create table document_terms(doc_number integer not null, term text not null, term_count integer not null, constraint document_terms_pkey primary key (term, doc_number), constraint fk_doc_number foreign key (doc_number) references documents(doc_number), constraint fk_term foreign key (term) references terms(term));"
+        cur.execute(sql) 
+
+        conn.commit()
+
+    except:
+        conn.rollback()
+        print ("There was a problem during the database creation or the database already exists.")
 
 def createCategory(cur, id_cat, name):
 
@@ -44,7 +64,6 @@ def createCategory(cur, id_cat, name):
     # --> add your Python code here
 
     sql = "Insert into categories (id_cat, name) Values (%s, %s)"
-    print(sql)
 
     recset = [id_cat, name]
     cur.execute(sql, recset)

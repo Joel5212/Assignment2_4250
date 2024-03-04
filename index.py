@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------
-# AUTHOR: your name
-# FILENAME: title of the source file
-# SPECIFICATION: description of the program
+# AUTHOR: Joel Joshy
+# FILENAME: index.py
+# SPECIFICATION: Category, Documents, Document-Term, Terms
 # FOR: CS 4250- Assignment #2
-# TIME SPENT: how long it took you to complete the assignment
+# TIME SPENT: 2hrs
 #-----------------------------------------------------------*/
 
 #importing some Python libraries
@@ -16,6 +16,9 @@ if __name__ == '__main__':
 
     # Getting a cursor
     cur = conn.cursor()
+
+    #create tables
+    createTables(cur, conn)
 
     #print a menu
     print("")
